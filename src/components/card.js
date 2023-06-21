@@ -1,3 +1,5 @@
+import axios from "axios";
+
 // TASK 5
 // ---------------------
 // Implement this function, which should return the markup you see below.
@@ -40,15 +42,31 @@ const Card = (article) => {
 	return cardDiv;
 };
 
-const cardAppender = (selector) => {
-	// TASK 6
-	// ---------------------
-	// Implement this function that takes a css selector as its only argument.
-	// It should obtain articles from this endpoint: `http://localhost:5001/api/articles` (test it with console.log!!).
-	// However, the articles do not come organized in a single, neat array. Inspect the response closely!
-	// Create a card from each and every article object in the response, using the Card component.
-	// Append each card to the element in the DOM that matches the selector passed to the function.
-	//
+// TASK 6
+// ---------------------
+// Implement this function that takes a css selector as its only argument.
+// It should obtain articles from this endpoint: `http://localhost:5001/api/articles` (test it with console.log!!).
+// However, the articles do not come organized in a single, neat array. Inspect the response closely!
+// Create a card from each and every article object in the response, using the Card component.
+// Append each card to the element in the DOM that matches the selector passed to the function.
+//
+
+const cardAppender = async (selector) => {
+	let element = document.querySelector(selector);
+	await axios
+		.get("http://localhost:5001/api/articles")
+		.then((data) => {
+			let res = data.data.articles;
+			for (const [key, value] of Object.entries(res)) {
+				value.forEach((elem) => {
+					const card = Card(elem);
+					element.appendChild(card);
+				});
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 };
 
 export { Card, cardAppender };
